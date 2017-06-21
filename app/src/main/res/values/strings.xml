@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">BDChat</string>
+    <string name="action_settings">Settings</string>
+    <string name="tab1">首页</string>
+    <string name="tab2">联系人</string>
+    <string name="tab3">我</string>
+    <string name="about">
+        介绍文字
+    </string>
+    <string name="update_info">
+        最新版本：%1$s
+        \n\n更新内容：\n%2$s
+    </string>
+</resources>
