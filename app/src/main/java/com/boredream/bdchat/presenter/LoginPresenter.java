@@ -1,6 +1,7 @@
 package com.boredream.bdchat.presenter;
 
-import android.text.TextUtils;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.ErrorConstants;
@@ -11,6 +12,9 @@ import com.boredream.bdcodehelper.utils.StringUtils;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
@@ -31,18 +35,19 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     @Override
     public void autoLogin(String sessionToken) {
-//        .delay(10, TimeUnit.SECONDS)
-
         final Observable<User> observable = HttpRequest.getSingleton().loginByTokenWithIm(sessionToken);
-        decObservable(observable
-                .map(new Function<User, User>() {
-                    @Override
-                    public User apply(@NonNull User user) throws Exception {
-                        return null;
-                    }
-                })
-                .timeout(SPLASH_DUR_MAX_TIME, TimeUnit.MILLISECONDS));
-
+        final long startTime = SystemClock.elapsedRealtime();
+        decObservable(observable.flatMap(new Function<User, ObservableSource<User>>() {
+                @Override
+                public ObservableSource<User> apply(@NonNull User user) throws Exception {
+                    // 接口返回后，凑够最短时间跳转
+                    long requestTime = SystemClock.elapsedRealtime() - startTime;
+                    long delayTime = requestTime < SPLASH_DUR_MIN_TIME
+                            ? SPLASH_DUR_MIN_TIME - requestTime : 0;
+                    return Observable.just(user).delay(delayTime, TimeUnit.MILLISECONDS);
+                }
+            })
+            .timeout(SPLASH_DUR_MAX_TIME, TimeUnit.MILLISECONDS));
     }
 
     @Override
@@ -57,12 +62,16 @@ public class LoginPresenter implements LoginContract.Presenter {
             return;
         }
 
-        // TODO: 2017/6/30 callback - > rxJava
         decObservable(HttpRequest.getSingleton().loginWithIm(username, password));
     }
 
     private void decObservable(Observable<User> observable) {
-        ObservableDecorator.decorate(observable).subscribe(new DisposableObserver<User>() {
+        ObservableDecorator.decorate(observable.flatMap(new Function<User, ObservableSource<User>>() {
+            @Override
+            public ObservableSource<User> apply(@NonNull User user) throws Exception {
+                return getImLoginObservable(user);
+            }
+        })).subscribe(new DisposableObserver<User>() {
 
             @Override
             public void onError(Throwable e) {
@@ -84,57 +93,50 @@ public class LoginPresenter implements LoginContract.Presenter {
                     return;
                 }
 
-                if(!TextUtils.isEmpty(user.getImToken())) {
-                    view.loginSuccess(user);
-                } else {
-                    imLogin(user);
-                }
+                view.loginSuccess(user);
             }
         });
     }
 
-    private void imLogin(final User user) {
-        RongIM.connect(user.getImToken(), new RongIMClient.ConnectCallback() {
-
-            /**
-             * Token 错误。可以从下面两点检查
-             * 1.  Token 是否过期，如果过期您需要向 App Server 重新请求一个新的 Token
-             * 2.  token 对应的 appKey 和工程里设置的 appKey 是否一致
-             */
+    private Observable<User> getImLoginObservable(final User user) {
+        return Observable.create(new ObservableOnSubscribe<User>() {
             @Override
-            public void onTokenIncorrect() {
+            public void subscribe(@NonNull final ObservableEmitter<User> e) throws Exception {
+                // 融云回调转换成RxJava回调
+                RongIM.connect(user.getImToken(), new RongIMClient.ConnectCallback() {
 
-            }
+                    /**
+                     * Token 错误。可以从下面两点检查
+                     * 1.  Token 是否过期，如果过期您需要向 App Server 重新请求一个新的 Token
+                     * 2.  token 对应的 appKey 和工程里设置的 appKey 是否一致
+                     */
+                    @Override
+                    public void onTokenIncorrect() {
+                        e.onError(new Throwable("im token error"));
+                    }
 
-            /**
-             * 连接融云成功
-             *
-             * @param userid 当前 token 对应的用户 id
-             */
-            @Override
-            public void onSuccess(String userid) {
-                if (!view.isActive()) {
-                    return;
-                }
+                    /**
+                     * 连接融云成功
+                     *
+                     * @param userid 当前 token 对应的用户 id
+                     */
+                    @Override
+                    public void onSuccess(String userid) {
+                        Log.i("DDD", "getImLoginObservable: get imToken success");
+                        e.onNext(user);
+                        e.onComplete();
+                    }
 
-                // 获取全部好友 // TODO: 2017/6/20
-//                IMUserProvider.getInstance().syncAllContacts();
-
-                view.loginSuccess(user);
-            }
-
-            /**
-             * 连接融云失败
-             *
-             * @param errorCode 错误码，可到官网 查看错误码对应的注释
-             */
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                if (!view.isActive()) {
-                    return;
-                }
-
-                view.loginError(errorCode.toString());
+                    /**
+                     * 连接融云失败
+                     *
+                     * @param errorCode 错误码，可到官网 查看错误码对应的注释
+                     */
+                    @Override
+                    public void onError(RongIMClient.ErrorCode errorCode) {
+                        e.onError(new Throwable(errorCode.toString()));
+                    }
+                });
             }
         });
     }
