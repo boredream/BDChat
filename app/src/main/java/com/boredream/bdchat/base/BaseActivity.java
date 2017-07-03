@@ -10,8 +10,9 @@ import com.boredream.bdcodehelper.base.BoreBaseActivity;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.functions.Action1;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 
 public class BaseActivity extends BoreBaseActivity {
 
@@ -68,12 +69,12 @@ public class BaseActivity extends BoreBaseActivity {
         }
 
         doubleBackExitPressedOnce = true;
-        showToast("再按一次返回键关闭程序");
+        showTip("再按一次返回键关闭程序");
         Observable.just(null)
                 .delay(2, TimeUnit.SECONDS)
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void call(Object o) {
+                    public void accept(@NonNull Object o) throws Exception {
                         // 延迟两秒后重置标志位为false
                         doubleBackExitPressedOnce = false;
                     }

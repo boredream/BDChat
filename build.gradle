@@ -40,6 +40,7 @@ ext {
     rulesVersion = '0.4.1'
     espressoVersion = '2.2.1'
     retrofitVersion = '2.3.0'
+    okhttp3Version = '3.4.1'
     rxjavaVersion = '2.1.0'
     rxandroidVersion = '2.0.1'
     glideVersion = '4.0.0-RC0'
