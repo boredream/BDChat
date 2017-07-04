@@ -16,8 +16,6 @@ import io.reactivex.functions.Consumer;
 
 public class BaseActivity extends BoreBaseActivity {
 
-    public BaseApplication application;
-
     private boolean couldDoubleBackExit;
     private boolean doubleBackExitPressedOnce;
 
@@ -25,20 +23,20 @@ public class BaseActivity extends BoreBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // TODO: 2017/7/4
+
         // 如果是退出应用flag,则直接关闭当前页面,不加载UI
         boolean exit = getIntent().getBooleanExtra("exit", false);
         if (exit) {
             finish();
             return;
         }
-
-        application = (BaseApplication) getApplication();
     }
 
     /**
      * 清空任务栈跳转至登录页
      */
-    protected void clearIntent2Login() {
+    public void clearIntent2Login() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

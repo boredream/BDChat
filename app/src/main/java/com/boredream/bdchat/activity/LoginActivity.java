@@ -13,12 +13,12 @@ import com.boredream.bdchat.base.BaseActivity;
 import com.boredream.bdchat.presenter.LoginContract;
 import com.boredream.bdchat.presenter.LoginPresenter;
 import com.boredream.bdcodehelper.entity.User;
-import com.boredream.bdcodehelper.view.TitlebarView;
+import com.boredream.bdcodehelper.view.TitleBarView;
 
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener , LoginContract.View {
 
-    private TitlebarView title;
+    private TitleBarView title;
     private EditText et_username;
     private EditText et_password;
     private Button btn_login;
@@ -34,10 +34,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         initView();
         loginPresenter = new LoginPresenter(this);
+
+        // FIXME: 2017/7/4 mock
+        et_username.setText("18551681236");
+        et_password.setText("123456");
     }
 
     private void initView() {
-        title = (TitlebarView) findViewById(R.id.title);
+        title = (TitleBarView) findViewById(R.id.title);
         et_username = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
         btn_login = (Button) findViewById(R.id.btn_login);
@@ -72,19 +76,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-//        Intent intent = new Intent(this, PhoneValidateStep1Activity.class);
         switch (v.getId()) {
             case R.id.btn_login:
                 submit();
                 break;
-//            case R.id.tv_forget_psw:
-//                intent.putExtra("type", 1);
-//                startActivity(intent);
-//                break;
-//            case R.id.ll_regist:
-//                intent.putExtra("type", 0);
-//                startActivity(intent);
-//                break;
+            case R.id.tv_forget_psw:
+                PhoneValidateStep1Activity.start(this, PhoneValidateStep1Activity.TYPE_FORGET_PSW);
+                break;
+            case R.id.ll_regist:
+                PhoneValidateStep1Activity.start(this, PhoneValidateStep1Activity.TYPE_REGISTER);
+                break;
         }
     }
 

@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.boredream.bdcodehelper.view.TitlebarView
+    <com.boredream.bdcodehelper.view.TitleBarView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-    </com.boredream.bdcodehelper.view.TitlebarView>
+    </com.boredream.bdcodehelper.view.TitleBarView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_setting"

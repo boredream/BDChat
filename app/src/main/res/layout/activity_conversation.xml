@@ -6,12 +6,12 @@
     android:orientation="vertical"
     tools:context="com.boredream.huainantaxi.activity.ConversationActivity">
 
-    <com.boredream.bdcodehelper.view.TitlebarView
+    <com.boredream.bdcodehelper.view.TitleBarView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-    </com.boredream.bdcodehelper.view.TitlebarView>
+    </com.boredream.bdcodehelper.view.TitleBarView>
 
     <fragment
         android:id="@+id/fragment_chat"

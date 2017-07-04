@@ -18,8 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.LoginActivity" />
-
         <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.PhoneValidateStep1Activity" />
+        <activity android:name=".activity.PhoneValidateStep2Activity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
