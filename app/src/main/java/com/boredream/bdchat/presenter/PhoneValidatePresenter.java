@@ -6,7 +6,7 @@ import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.entity.UserRegisterByMobilePhone;
 import com.boredream.bdcodehelper.net.DefaultDisposableObserver;
 import com.boredream.bdcodehelper.net.HttpRequest;
-import com.boredream.bdcodehelper.net.ObservableDecorator;
+import com.boredream.bdcodehelper.net.RxComposer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +33,8 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
         Map<String, Object> params = new HashMap<>();
         params.put("mobilePhoneNumber", phone);
         // TODO: 2017/7/4 Object?
-        Observable<Object> observable = HttpRequest.getSingleton().getApiService().requestSmsCode(params);
-        ObservableDecorator.decorate(observable)
+        HttpRequest.getSingleton().getApiService().requestSmsCode(params)
+                .compose(RxComposer.schedulers())
                 .subscribe(new DefaultDisposableObserver<Object>(view){
                     @Override
                     public void onNext(Object o) {
@@ -58,8 +58,10 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
         register.setSmsCode(smsCode);
         register.setPassword(password);
         // TODO: 2017/7/4 接口是登陆和注册两用的，如何在注册时检测账号已使用？
-        Observable<User> observable = HttpRequest.getSingleton().getApiService().usersByMobilePhone(register);
-        ObservableDecorator.decorate(observable)
+        HttpRequest.getSingleton()
+                .getApiService()
+                .usersByMobilePhone(register)
+                .compose(RxComposer.<User>schedulers())
                 .subscribe(new DefaultDisposableObserver<User>(view){
                     @Override
                     public void onNext(User user) {
@@ -81,8 +83,9 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
         Map<String, Object> params = new HashMap<>();
         params.put("password", newPsw);
         // TODO: 2017/7/4 Object?
-        Observable<Object> observable = HttpRequest.getSingleton().getApiService().resetPasswordBySmsCode(smsCode, params);
-        ObservableDecorator.decorate(observable)
+        HttpRequest.getSingleton()
+                .getApiService()
+                .resetPasswordBySmsCode(smsCode, params).compose(RxComposer.schedulers())
                 .subscribe(new DefaultDisposableObserver<Object>(view){
                     @Override
                     public void onNext(Object user) {

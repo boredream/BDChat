@@ -10,6 +10,7 @@ import com.boredream.bdchat.presenter.LoginContract;
 import com.boredream.bdchat.presenter.LoginPresenter;
 import com.boredream.bdcodehelper.base.UserInfoKeeper;
 import com.boredream.bdcodehelper.entity.User;
+import com.boredream.bdcodehelper.utils.LogUtils;
 
 public class SplashActivity extends BaseActivity implements LoginContract.View {
 
@@ -44,13 +45,13 @@ public class SplashActivity extends BaseActivity implements LoginContract.View {
 
     @Override
     public void loginSuccess(User user) {
-        Log.i("DDD", "loginSuccess");
+        LogUtils.showLog("loginSuccess");
         intent2Activity(MainActivity.class);
     }
 
     @Override
     public void loginError(String error) {
-        Log.i("DDD", "loginError " + error);
+        LogUtils.showLog("loginError " + error);
         intent2Activity(LoginActivity.class);
     }
 

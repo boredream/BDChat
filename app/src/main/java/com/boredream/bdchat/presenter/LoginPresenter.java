@@ -1,12 +1,14 @@
 package com.boredream.bdchat.presenter;
 
 import android.os.SystemClock;
-import android.util.Log;
 
+import com.boredream.bdchat.utils.IMUserProvider;
+import com.boredream.bdcodehelper.base.UserInfoKeeper;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.ErrorConstants;
 import com.boredream.bdcodehelper.net.HttpRequest;
-import com.boredream.bdcodehelper.net.ObservableDecorator;
+import com.boredream.bdcodehelper.net.RxComposer;
+import com.boredream.bdcodehelper.utils.LogUtils;
 import com.boredream.bdcodehelper.utils.StringUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -16,6 +18,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.rong.imkit.RongIM;
@@ -66,36 +69,44 @@ public class LoginPresenter implements LoginContract.Presenter {
     }
 
     private void decObservable(Observable<User> observable) {
-        ObservableDecorator.decorate(observable.flatMap(new Function<User, ObservableSource<User>>() {
-            @Override
-            public ObservableSource<User> apply(@NonNull User user) throws Exception {
-                return getImLoginObservable(user);
-            }
-        })).subscribe(new DisposableObserver<User>() {
+        observable.compose(RxComposer.<User>schedulers())
+                .flatMap(new Function<User, ObservableSource<User>>() {
+                    @Override
+                    public ObservableSource<User> apply(@NonNull User user) throws Exception {
+                        return getImLoginObservable(user);
+                    }
+                })
+                .subscribe(new DisposableObserver<User>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        if (!view.isActive()) {
+                            return;
+                        }
 
-            @Override
-            public void onError(Throwable e) {
-                if (!view.isActive()) {
-                    return;
-                }
+                        view.loginError(ErrorConstants.parseHttpErrorInfo(e));
+                    }
 
-                view.loginError(ErrorConstants.parseHttpErrorInfo(e));
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onComplete() {
+                    }
 
-            }
+                    @Override
+                    public void onNext(User user) {
+                        if (!view.isActive()) {
+                            return;
+                        }
 
-            @Override
-            public void onNext(User user) {
-                if (!view.isActive()) {
-                    return;
-                }
+                        // 保存登录用户数据以及token信息
+                        UserInfoKeeper.getInstance().setCurrentUser(user);
+                        // 保存自动登录使用的信息
+                        UserInfoKeeper.getInstance().saveSessionToken(user.getSessionToken());
+                        // 同步通讯录
+                        IMUserProvider.syncAllContacts();
 
-                view.loginSuccess(user);
-            }
-        });
+                        view.loginSuccess(user);
+                    }
+                });
     }
 
     private Observable<User> getImLoginObservable(final User user) {
@@ -122,7 +133,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                      */
                     @Override
                     public void onSuccess(String userid) {
-                        Log.i("DDD", "getImLoginObservable: get imToken success");
+                        LogUtils.showLog("getImLoginObservable: get imToken success");
                         e.onNext(user);
                         e.onComplete();
                     }

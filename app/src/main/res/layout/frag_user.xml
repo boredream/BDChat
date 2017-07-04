@@ -11,6 +11,29 @@
 
     </com.boredream.bdcodehelper.view.TitleBarView>
 
+    <LinearLayout
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_width="match_parent"
+        android:padding="@dimen/margin_medium"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_height="72dp">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:scaleType="centerCrop"
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
+
+        <TextView
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:id="@+id/tv_username"
+            style="@style/TextViewSubhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_user"
         android:layout_width="match_parent"
