@@ -4,6 +4,7 @@ import android.os.SystemClock;
 
 import com.boredream.bdchat.utils.IMUserProvider;
 import com.boredream.bdcodehelper.base.UserInfoKeeper;
+import com.boredream.bdcodehelper.entity.BaseResponse;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.ErrorConstants;
 import com.boredream.bdcodehelper.net.HttpRequest;
@@ -11,6 +12,8 @@ import com.boredream.bdcodehelper.net.RxComposer;
 import com.boredream.bdcodehelper.utils.LogUtils;
 import com.boredream.bdcodehelper.utils.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -18,7 +21,6 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.rong.imkit.RongIM;
@@ -38,19 +40,25 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     @Override
     public void autoLogin(String sessionToken) {
-        final Observable<User> observable = HttpRequest.getSingleton().loginByTokenWithIm(sessionToken);
+        Map<String, String> request = new HashMap<>();
+        request.put("sessionToken", sessionToken);
+        // TODO: 2017/7/5
         final long startTime = SystemClock.elapsedRealtime();
-        decObservable(observable.flatMap(new Function<User, ObservableSource<User>>() {
-                @Override
-                public ObservableSource<User> apply(@NonNull User user) throws Exception {
-                    // 接口返回后，凑够最短时间跳转
-                    long requestTime = SystemClock.elapsedRealtime() - startTime;
-                    long delayTime = requestTime < SPLASH_DUR_MIN_TIME
-                            ? SPLASH_DUR_MIN_TIME - requestTime : 0;
-                    return Observable.just(user).delay(delayTime, TimeUnit.MILLISECONDS);
-                }
-            })
-            .timeout(SPLASH_DUR_MAX_TIME, TimeUnit.MILLISECONDS));
+        decObservable(HttpRequest.getSingleton()
+                .getApiService()
+                .imLogin(request)
+                .flatMap(new Function<BaseResponse<User>, ObservableSource<BaseResponse<User>>>() {
+                    @Override
+                    public ObservableSource<BaseResponse<User>> apply(@NonNull BaseResponse<User> response) throws Exception {
+                        // 接口返回后，凑够最短时间跳转
+                        long requestTime = SystemClock.elapsedRealtime() - startTime;
+                        long delayTime = requestTime < SPLASH_DUR_MIN_TIME
+                                ? SPLASH_DUR_MIN_TIME - requestTime : 0;
+                        LogUtils.showLog("autoLogin delay = " + delayTime);
+                        return Observable.just(response).delay(delayTime, TimeUnit.MILLISECONDS);
+                    }
+                })
+                .timeout(SPLASH_DUR_MAX_TIME, TimeUnit.MILLISECONDS));
     }
 
     @Override
@@ -65,38 +73,26 @@ public class LoginPresenter implements LoginContract.Presenter {
             return;
         }
 
-        decObservable(HttpRequest.getSingleton().loginWithIm(username, password));
+        Map<String, String> request = new HashMap<>();
+        request.put("username", username);
+        request.put("password", password);
+        decObservable(HttpRequest.getSingleton()
+                .getApiService()
+                .imLogin(request));
     }
 
-    private void decObservable(Observable<User> observable) {
-        observable.compose(RxComposer.<User>schedulers())
+    private void decObservable(Observable<BaseResponse<User>> observable) {
+        observable.compose(RxComposer.<User>handleBaseResponse())
                 .flatMap(new Function<User, ObservableSource<User>>() {
                     @Override
                     public ObservableSource<User> apply(@NonNull User user) throws Exception {
                         return getImLoginObservable(user);
                     }
                 })
+                .compose(RxComposer.<User>schedulers())
                 .subscribe(new DisposableObserver<User>() {
                     @Override
-                    public void onError(Throwable e) {
-                        if (!view.isActive()) {
-                            return;
-                        }
-
-                        view.loginError(ErrorConstants.parseHttpErrorInfo(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        if (!view.isActive()) {
-                            return;
-                        }
-
+                    public void onNext(@NonNull User user) {
                         // 保存登录用户数据以及token信息
                         UserInfoKeeper.getInstance().setCurrentUser(user);
                         // 保存自动登录使用的信息
@@ -105,6 +101,16 @@ public class LoginPresenter implements LoginContract.Presenter {
                         IMUserProvider.syncAllContacts();
 
                         view.loginSuccess(user);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        view.loginError(ErrorConstants.parseHttpErrorInfo(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }

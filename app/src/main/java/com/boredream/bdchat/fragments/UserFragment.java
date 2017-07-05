@@ -65,7 +65,7 @@ public class UserFragment extends BaseFragment implements AdapterView.OnItemClic
 			public void onClick(View v) {
 				Map<String, Object> map = new HashMap<>();
 				final String newNickname = "昵称_" + new Random().nextInt(100);
-				map.put("nickname", newNickname);
+				map.put("nickname1111", newNickname);
 
 				HttpRequest.getSingleton()
 						.getApiService()

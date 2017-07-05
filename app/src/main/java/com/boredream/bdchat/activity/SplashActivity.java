@@ -2,7 +2,6 @@ package com.boredream.bdchat.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.base.BaseActivity;
@@ -47,12 +46,14 @@ public class SplashActivity extends BaseActivity implements LoginContract.View {
     public void loginSuccess(User user) {
         LogUtils.showLog("loginSuccess");
         intent2Activity(MainActivity.class);
+        finish();
     }
 
     @Override
     public void loginError(String error) {
         LogUtils.showLog("loginError " + error);
         intent2Activity(LoginActivity.class);
+        finish();
     }
 
 }

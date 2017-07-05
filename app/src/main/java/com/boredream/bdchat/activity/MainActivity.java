@@ -7,6 +7,7 @@ import android.widget.RadioGroup;
 
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.base.BaseActivity;
+import com.boredream.bdchat.fragments.ContactFragment;
 import com.boredream.bdchat.fragments.HomeFragment;
 import com.boredream.bdchat.fragments.UserFragment;
 import com.boredream.bdcodehelper.fragment.FragmentController;
@@ -29,7 +30,7 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFragment());
-        fragments.add(new HomeFragment());
+        fragments.add(new ContactFragment());
         fragments.add(new UserFragment());
         controller = new FragmentController(this, R.id.fl_content, fragments);
 

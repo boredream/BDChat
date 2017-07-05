@@ -11,8 +11,6 @@ import com.boredream.bdcodehelper.net.RxComposer;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.reactivex.Observable;
-
 public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
 
     private final PhoneValidateContract.View view;
@@ -40,10 +38,6 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
                     public void onNext(Object o) {
                         super.onNext(o);
 
-                        if (!view.isActive()) {
-                            return;
-                        }
-
                         view.requestSmsSuccess();
                     }
                 });
@@ -67,10 +61,6 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
                     public void onNext(User user) {
                         super.onNext(user);
 
-                        if (!view.isActive()) {
-                            return;
-                        }
-
                         view.registerSuccess(user);
                     }
                 });
@@ -90,10 +80,6 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
                     @Override
                     public void onNext(Object user) {
                         super.onNext(user);
-
-                        if (!view.isActive()) {
-                            return;
-                        }
 
                         view.forgetUserSuccess(newPsw);
                     }

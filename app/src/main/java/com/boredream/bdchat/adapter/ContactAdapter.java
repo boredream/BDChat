@@ -1,6 +1,5 @@
 package com.boredream.bdchat.adapter;
 
-import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,12 +9,14 @@ import android.widget.TextView;
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.base.BaseActivity;
 import com.boredream.bdcodehelper.entity.User;
+import com.boredream.bdcodehelper.net.GlideHelper;
 import com.boredream.bdcodehelper.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,38 +25,35 @@ import java.util.Map;
 public class ContactAdapter extends BaseAdapter {
 
     private BaseActivity context;
-    private ArrayList<User> users = new ArrayList<>();
-    private Map<Character, Integer> indexMap = new HashMap<>();
+    private List<User> users = new ArrayList<>();
+    private Map<String, Integer> indexMap = new HashMap<>();
 
-    public ArrayList<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(ArrayList<User> users) {
+    public void setUsers(List<User> users) {
         Collections.sort(users, new Comparator<User>() {
             @Override
             public int compare(User lhs, User rhs) {
                 return lhs.getLetter().compareTo(rhs.getLetter());
             }
         });
-
-//        for (int index = 0; index < users.size(); index++) {
-//            User user = users.get(index);
-//            char firstLetter = StringUtils.getFirstLetter(user.getLetter());
-//            if (!indexMap.containsKey(firstLetter)) {
-//                indexMap.put(firstLetter, index);
-//            }
-//        }
-
+        for (int index = 0; index < users.size(); index++) {
+            User user = users.get(index);
+            String firstLetter = StringUtils.getFirstLetter(user.getLetter());
+            if (!indexMap.containsKey(firstLetter)) {
+                indexMap.put(firstLetter, index);
+            }
+        }
         this.users = users;
     }
 
-    public ContactAdapter(BaseActivity context, ArrayList<User> users) {
+    public ContactAdapter(BaseActivity context) {
         this.context = context;
-        setUsers(users);
     }
 
-    public int getPositionByLetter(char firstLetter) {
+    public int getPositionByLetter(String firstLetter) {
         Integer position = indexMap.get(firstLetter);
         return position == null ? -1 : position;
     }
@@ -88,25 +86,27 @@ public class ContactAdapter extends BaseAdapter {
 
         final User user = getItem(position);
 
-//        char firstLetter = StringUtils.getFirstLetter(user.getLetter());
-//        if (position == getPositionByLetter(firstLetter)) {
-//            holder.tv_first_letter.setVisibility(View.VISIBLE);
-//            holder.tv_first_letter.setText(firstLetter+"");
-//        } else {
-//            holder.tv_first_letter.setVisibility(View.GONE);
-//        }
-//
-//        GlideHelper.showAvatar(context, user.getAvatar(), holder.iv_image);
-//        holder.tv_name.setText(user.getNickname());
-//
-//        convertView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        String firstLetter = StringUtils.getFirstLetter(user.getLetter());
+        if (position == getPositionByLetter(firstLetter)) {
+            holder.tv_first_letter.setVisibility(View.VISIBLE);
+            holder.tv_first_letter.setText(String.valueOf(firstLetter));
+        } else {
+            holder.tv_first_letter.setVisibility(View.GONE);
+        }
+
+        GlideHelper.loadImg(holder.iv_image, user.getAvatarUrl());
+
+        holder.tv_name.setText(user.getNickname());
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 2017/7/5
 //                Intent intent = new Intent(context, ContactDetailActivity.class);
 //                intent.putExtra("user", user);
 //                context.startActivity(intent);
-//            }
-//        });
+            }
+        });
 
         return convertView;
     }

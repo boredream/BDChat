@@ -6,25 +6,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.adapter.ContactAdapter;
 import com.boredream.bdchat.base.BaseFragment;
+import com.boredream.bdchat.entity.GetContactsCompleteEvent;
+import com.boredream.bdchat.utils.IMUserProvider;
+import com.boredream.bdcodehelper.base.UserInfoKeeper;
 import com.boredream.bdcodehelper.entity.User;
+import com.boredream.bdcodehelper.utils.LogUtils;
+import com.boredream.bdcodehelper.view.PositionBar;
+import com.boredream.bdcodehelper.view.TitleBarView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 联系人页面
  */
-public class ContactFragment extends BaseFragment {
+public class ContactFragment extends BaseFragment implements PositionBar.OnPositionChangedListener {
 
     private View view;
+    private TitleBarView title;
     private ListView lv;
+    private PositionBar pb_letter;
     private ContactAdapter adapter;
-    private ArrayList<User> users = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,24 +43,12 @@ public class ContactFragment extends BaseFragment {
     }
 
     private void initView() {
-//        new TitleBuilder(view).setTitleText(getString(R.string.tab2))
-//                .setLeftText("聊天室")
-//                .setLeftOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        intent2Activity(AllChatRoomActivity.class);
-//                    }
-//                })
-//                .setRightText("+")
-//                .setRightOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        intent2Activity(AllContactsActivity.class);
-//                    }
-//                });
-
+        title = (TitleBarView) view.findViewById(R.id.title);
+        title.setTitleText("通讯录");
         lv = (ListView) view.findViewById(R.id.lv);
-        adapter = new ContactAdapter(activity, users);
+        pb_letter = (PositionBar) view.findViewById(R.id.pb_letter);
+        pb_letter.setOnPositionChangedListener(this);
+        adapter = new ContactAdapter(activity);
         lv.setAdapter(adapter);
     }
 
@@ -67,17 +64,16 @@ public class ContactFragment extends BaseFragment {
         EventBus.getDefault().unregister(this);
     }
 
-//    /**
-//     * 收到好友更新完成时响应此事件
-//     *
-//     * @param event
-//     */
-//    public void onEvent(GetContactsCompleteEvent event) {
-//        if (event.isSuccess()) {
-//            showLog("GetContactsComplete");
-//            refreshMembers();
-//        }
-//    }
+    /**
+     * 收到好友更新完成时响应此事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getContactComplete(GetContactsCompleteEvent event) {
+        if (event.isSuccess()) {
+            LogUtils.showLog("GetContactsComplete");
+            refreshMembers();
+        }
+    }
 
     @Override
     public void onResume() {
@@ -86,19 +82,25 @@ public class ContactFragment extends BaseFragment {
     }
 
     private void refreshMembers() {
-//        // 过滤当前用户，不显示在通讯录中
-//        List<User> allUsers = IMUserProvider.getInstance().getAllUsers();
-//        Iterator<User> iterator = allUsers.iterator();
-//        for (; iterator.hasNext(); ) {
-//            User user = iterator.next();
-//            if (UserInfoKeeper.getCurrentUser().getObjectId().equals(user.getObjectId())) {
-//                iterator.remove();
-//                break;
-//            }
-//        }
-//
-//        users.clear();
-//        users.addAll(allUsers);
-//        adapter.notifyDataSetChanged();
+        // 过滤当前用户，不显示在通讯录中
+        List<User> allUsers = IMUserProvider.allContacts;
+
+        // FIXME: 2017/7/5 使用我的好友替代全部人员
+        Iterator<User> iterator = allUsers.iterator();
+        for (; iterator.hasNext(); ) {
+            User user = iterator.next();
+            if (UserInfoKeeper.getInstance().getCurrentUser().getObjectId().equals(user.getObjectId())) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        adapter.setUsers(allUsers);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPositionSelected(String key) {
+        lv.setSelection(adapter.getPositionByLetter(key));
     }
 }
