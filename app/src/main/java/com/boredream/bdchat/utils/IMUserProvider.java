@@ -26,10 +26,15 @@ public class IMUserProvider implements RongIM.UserInfoProvider {
 
     @Override
     public UserInfo getUserInfo(String userId) {
-        User user = HttpRequest.getSingleton()
-                .getApiService()
-                .getUserById(userId)
-                .blockingSingle();
+        User user = null;
+        try {
+            user = HttpRequest.getSingleton()
+                    .getApiService()
+                    .getUserById(userId)
+                    .blockingSingle();
+        } catch (Exception e) {
+            // do nothing
+        }
         return user2contact(user);
     }
 

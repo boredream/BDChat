@@ -21,6 +21,16 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.PhoneValidateStep1Activity" />
         <activity android:name=".activity.PhoneValidateStep2Activity" />
+        <activity android:name=".im.ConversationActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="com.boredream.bdchat"
+                    android:pathPrefix="/conversation/"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

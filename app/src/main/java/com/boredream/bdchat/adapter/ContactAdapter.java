@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.rong.imkit.RongIM;
+
 /**
  * 成员列表 Adapter
  */
@@ -101,10 +103,7 @@ public class ContactAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2017/7/5
-//                Intent intent = new Intent(context, ContactDetailActivity.class);
-//                intent.putExtra("user", user);
-//                context.startActivity(intent);
+                RongIM.getInstance().startPrivateChat(context, user.getObjectId(), user.getNickname());
             }
         });
 
