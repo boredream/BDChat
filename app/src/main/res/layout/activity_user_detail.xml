@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.boredream.bdcodehelper.view.TitleBarView
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.boredream.bdcodehelper.view.TitleBarView>
+
+    <include layout="@layout/include_user_card" />
+
+    <Button
+        android:id="@+id/btn"
+        style="@style/ButtonPrimary"
+        android:visibility="gone"
+        android:text="添加到通讯录"
+        android:layout_margin="@dimen/margin_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

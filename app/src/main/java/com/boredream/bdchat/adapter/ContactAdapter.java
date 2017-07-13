@@ -52,6 +52,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
         GlideHelper.loadImg(holder.iv_image, data.getAvatarUrl());
         holder.tv_name.setText(data.getNickname());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 }
