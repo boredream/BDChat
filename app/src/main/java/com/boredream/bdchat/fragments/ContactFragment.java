@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.boredream.bdchat.R;
-import com.boredream.bdchat.adapter.ContactAdapter;
+import com.boredream.bdchat.activity.SearchContactActivity;
+import com.boredream.bdchat.adapter.LetterContactAdapter;
 import com.boredream.bdchat.base.BaseFragment;
 import com.boredream.bdchat.entity.GetContactsCompleteEvent;
 import com.boredream.bdchat.utils.IMUserProvider;
@@ -33,7 +34,7 @@ public class ContactFragment extends BaseFragment implements PositionBar.OnPosit
     private TitleBarView title;
     private ListView lv;
     private PositionBar pb_letter;
-    private ContactAdapter adapter;
+    private LetterContactAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,10 +46,17 @@ public class ContactFragment extends BaseFragment implements PositionBar.OnPosit
     private void initView() {
         title = (TitleBarView) view.findViewById(R.id.title);
         title.setTitleText("通讯录");
+        title.setRightText("添加");
+        title.setRightOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.intent2Activity(SearchContactActivity.class);
+            }
+        });
         lv = (ListView) view.findViewById(R.id.lv);
         pb_letter = (PositionBar) view.findViewById(R.id.pb_letter);
         pb_letter.setOnPositionChangedListener(this);
-        adapter = new ContactAdapter(activity);
+        adapter = new LetterContactAdapter(activity);
         lv.setAdapter(adapter);
     }
 

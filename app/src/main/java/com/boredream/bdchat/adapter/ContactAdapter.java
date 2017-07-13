@@ -1,125 +1,57 @@
 package com.boredream.bdchat.adapter;
 
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.boredream.bdchat.R;
-import com.boredream.bdchat.base.BaseActivity;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.GlideHelper;
-import com.boredream.bdcodehelper.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import io.rong.imkit.RongIM;
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
 
-/**
- * 成员列表 Adapter
- */
-public class ContactAdapter extends BaseAdapter {
+    private Context context;
+    private List<User> datas;
 
-    private BaseActivity context;
-    private List<User> users = new ArrayList<>();
-    private Map<String, Integer> indexMap = new HashMap<>();
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        Collections.sort(users, new Comparator<User>() {
-            @Override
-            public int compare(User lhs, User rhs) {
-                return lhs.getLetter().toUpperCase().compareTo(rhs.getLetter().toUpperCase());
-            }
-        });
-        for (int index = 0; index < users.size(); index++) {
-            User user = users.get(index);
-            String firstLetter = StringUtils.getFirstLetter(user.getLetter());
-            if (!indexMap.containsKey(firstLetter)) {
-                indexMap.put(firstLetter, index);
-            }
-        }
-        this.users = users;
-    }
-
-    public ContactAdapter(BaseActivity context) {
+    public ContactAdapter(Context context, List<User> datas) {
         this.context = context;
-    }
-
-    public int getPositionByLetter(String firstLetter) {
-        Integer position = indexMap.get(firstLetter);
-        return position == null ? -1 : position;
+        this.datas = datas;
     }
 
     @Override
-    public int getCount() {
-        return users.size();
+    public int getItemCount() {
+        return datas.size();
     }
 
-    @Override
-    public User getItem(int position) {
-        return users.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if(convertView == null) {
-            convertView = View.inflate(context, R.layout.item_contact, null);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        final User user = getItem(position);
-
-        String firstLetter = StringUtils.getFirstLetter(user.getLetter());
-        if (position == getPositionByLetter(firstLetter)) {
-            holder.tv_first_letter.setVisibility(View.VISIBLE);
-            holder.tv_first_letter.setText(String.valueOf(firstLetter));
-        } else {
-            holder.tv_first_letter.setVisibility(View.GONE);
-        }
-
-        GlideHelper.loadImg(holder.iv_image, user.getAvatarUrl());
-
-        holder.tv_name.setText(user.getNickname());
-
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RongIM.getInstance().startPrivateChat(context, user.getObjectId(), user.getNickname());
-            }
-        });
-
-        return convertView;
-    }
-
-    public static class ViewHolder {
-        public TextView tv_first_letter;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView iv_image;
         public TextView tv_name;
 
         public ViewHolder(final View itemView) {
-            tv_first_letter = (TextView) itemView.findViewById(R.id.tv_first_letter);
+            super(itemView);
             iv_image = (ImageView) itemView.findViewById(R.id.iv_image);
             tv_name = (TextView) itemView.findViewById(R.id.tv_name);
         }
+    }
+
+    @Override
+    public ContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(context).inflate(R.layout.item_contact, parent, false);
+        return new ViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        final User data = datas.get(position);
+
+        GlideHelper.loadImg(holder.iv_image, data.getAvatarUrl());
+        holder.tv_name.setText(data.getNickname());
     }
 
 }

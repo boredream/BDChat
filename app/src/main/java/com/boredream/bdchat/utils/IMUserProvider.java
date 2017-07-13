@@ -51,7 +51,7 @@ public class IMUserProvider implements RongIM.UserInfoProvider {
         // TODO: 2017/7/4 服务端权限记得改回来，user的find
 
         HttpRequest.getSingleton()
-                .getUsersByUsername(null)
+                .getUsersByUsernames(null)
                 .compose(RxComposer.<BaseResponse<User>>schedulers())
                 .subscribe(new DisposableObserver<BaseResponse<User>>() {
                     @Override

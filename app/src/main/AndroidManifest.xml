@@ -21,7 +21,8 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.PhoneValidateStep1Activity" />
         <activity android:name=".activity.PhoneValidateStep2Activity" />
-        <activity android:name=".im.ConversationActivity" >
+        <activity android:name=".activity.SearchContactActivity" />
+        <activity android:name=".activity.ConversationActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

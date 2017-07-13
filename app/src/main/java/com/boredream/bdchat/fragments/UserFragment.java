@@ -30,6 +30,7 @@ import java.util.Random;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableObserver;
+import io.rong.message.TextMessage;
 
 public class UserFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 
@@ -63,32 +64,6 @@ public class UserFragment extends BaseFragment implements AdapterView.OnItemClic
 		tv_username.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Map<String, Object> map = new HashMap<>();
-				final String newNickname = "昵称_" + new Random().nextInt(100);
-				map.put("nickname", newNickname);
-
-				HttpRequest.getSingleton()
-						.getApiService()
-						.updateUserById(currentUser.getObjectId(), map)
-						.compose(RxComposer.<BoreBaseEntity>schedulers())
-						.subscribe(new DisposableObserver<BoreBaseEntity>() {
-							@Override
-							public void onNext(@NonNull BoreBaseEntity boreBaseEntity) {
-								currentUser.setNickname(newNickname);
-								UserInfoKeeper.getInstance().setCurrentUser(currentUser);
-								initData();
-							}
-
-							@Override
-							public void onError(@NonNull Throwable e) {
-
-							}
-
-							@Override
-							public void onComplete() {
-
-							}
-						});
 			}
 		});
 

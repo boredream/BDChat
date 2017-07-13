@@ -1,4 +1,4 @@
-package com.boredream.bdchat.im;
+package com.boredream.bdchat.activity;
 
 import android.os.Bundle;
 

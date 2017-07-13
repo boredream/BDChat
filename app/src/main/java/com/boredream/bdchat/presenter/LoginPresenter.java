@@ -82,7 +82,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     }
 
     private void decObservable(Observable<BaseResponse<User>> observable) {
-        observable.compose(RxComposer.<User>handleBaseResponse())
+        observable.compose(RxComposer.<User>handleCloudResponse())
                 .flatMap(new Function<User, ObservableSource<User>>() {
                     @Override
                     public ObservableSource<User> apply(@NonNull User user) throws Exception {
