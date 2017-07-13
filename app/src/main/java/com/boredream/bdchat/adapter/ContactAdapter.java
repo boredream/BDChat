@@ -38,7 +38,7 @@ public class ContactAdapter extends BaseAdapter {
         Collections.sort(users, new Comparator<User>() {
             @Override
             public int compare(User lhs, User rhs) {
-                return lhs.getLetter().compareTo(rhs.getLetter());
+                return lhs.getLetter().toUpperCase().compareTo(rhs.getLetter().toUpperCase());
             }
         });
         for (int index = 0; index < users.size(); index++) {
