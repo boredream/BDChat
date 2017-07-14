@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.adapter.ContactAdapter;
@@ -50,6 +51,14 @@ public class SearchContactActivity extends BaseActivity implements SearchContact
         rv.setAdapter(adapter);
 
         // TODO: 2017/7/13 pull to refresh
+
+        // FIXME: 2017/7/14
+        searchbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.search(searchbar.getEditText().getText().toString(), false);
+            }
+        });
 
         searchbar.initSearchBar("请输入要搜索用户的手机号", new SearchBar.OnSearchListener() {
             @Override

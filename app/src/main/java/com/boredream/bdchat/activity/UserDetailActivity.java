@@ -48,6 +48,8 @@ public class UserDetailActivity extends BaseActivity implements UserDetailContra
         presenter = new UserDetailPresenter(this);
 
         titlebar = (TitleBarView) findViewById(R.id.titlebar);
+        titlebar.setLeftBack(this);
+        titlebar.setTitleText("详细资料");
         iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
         tv_username = (TextView) findViewById(R.id.tv_username);
         btn = (Button) findViewById(R.id.btn);
@@ -63,7 +65,7 @@ public class UserDetailActivity extends BaseActivity implements UserDetailContra
         GlideHelper.loadImg(iv_avatar, user.getAvatarUrl());
         tv_username.setText(user.getNickname());
 
-        final boolean isFriend = !IMUserProvider.allContacts.contains(user); // FIXME: 2017/7/13 
+        final boolean isFriend = IMUserProvider.allContacts.contains(user);
         btn.setVisibility(View.VISIBLE);
         btn.setText(isFriend ? "发起聊天" : "添加到通讯录");
         btn.setOnClickListener(new View.OnClickListener() {

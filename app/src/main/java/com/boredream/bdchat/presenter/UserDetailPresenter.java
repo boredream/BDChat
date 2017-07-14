@@ -2,7 +2,7 @@ package com.boredream.bdchat.presenter;
 
 import android.util.Log;
 
-import com.boredream.bdcodehelper.entity.BaseResponse;
+import com.boredream.bdcodehelper.entity.CloudResponse;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.DefaultDisposableObserver;
 import com.boredream.bdcodehelper.net.HttpRequest;
@@ -36,15 +36,17 @@ public class UserDetailPresenter implements UserDetailContract.Presenter {
 
     @Override
     public void friendRequest(String userId) {
+        HashMap<String, String> request = new HashMap<>();
+        request.put("userId", userId);
         HttpRequest.getSingleton()
                 .getApiService()
-                .friendRequest(new HashMap<String, String>())
-                .compose(RxComposer.<BaseResponse<User>>schedulers())
-                .subscribe(new DefaultDisposableObserver<BaseResponse<User>>(view){
+                .friendRequest(request)
+                .compose(RxComposer.<CloudResponse<User>>schedulers())
+                .subscribe(new DefaultDisposableObserver<CloudResponse<User>>(view){
                     @Override
-                    public void onNext(BaseResponse<User> userBaseResponse) {
+                    public void onNext(CloudResponse<User> userBaseResponse) {
                         super.onNext(userBaseResponse);
-
+                        // TODO: 2017/7/14
                         Log.i("DDD", "onNext: ~~~~~~~~~~~~~~~~~");
                     }
                 });

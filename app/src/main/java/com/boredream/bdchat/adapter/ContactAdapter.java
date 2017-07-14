@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.boredream.bdchat.R;
+import com.boredream.bdchat.activity.UserDetailActivity;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.GlideHelper;
 
@@ -55,7 +56,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                UserDetailActivity.start(context, data.getObjectId());
             }
         });
     }

@@ -4,7 +4,7 @@ import android.os.SystemClock;
 
 import com.boredream.bdchat.utils.IMUserProvider;
 import com.boredream.bdcodehelper.base.UserInfoKeeper;
-import com.boredream.bdcodehelper.entity.BaseResponse;
+import com.boredream.bdcodehelper.entity.CloudResponse;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.ErrorConstants;
 import com.boredream.bdcodehelper.net.HttpRequest;
@@ -42,14 +42,14 @@ public class LoginPresenter implements LoginContract.Presenter {
     public void autoLogin(String sessionToken) {
         Map<String, String> request = new HashMap<>();
         request.put("sessionToken", sessionToken);
-        // TODO: 2017/7/5
+        // TODO: 2017/7/5 user rxjava
         final long startTime = SystemClock.elapsedRealtime();
         decObservable(HttpRequest.getSingleton()
                 .getApiService()
                 .imLogin(request)
-                .flatMap(new Function<BaseResponse<User>, ObservableSource<BaseResponse<User>>>() {
+                .flatMap(new Function<CloudResponse<User>, ObservableSource<CloudResponse<User>>>() {
                     @Override
-                    public ObservableSource<BaseResponse<User>> apply(@NonNull BaseResponse<User> response) throws Exception {
+                    public ObservableSource<CloudResponse<User>> apply(@NonNull CloudResponse<User> response) throws Exception {
                         // 接口返回后，凑够最短时间跳转
                         long requestTime = SystemClock.elapsedRealtime() - startTime;
                         long delayTime = requestTime < SPLASH_DUR_MIN_TIME
@@ -81,7 +81,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                 .imLogin(request));
     }
 
-    private void decObservable(Observable<BaseResponse<User>> observable) {
+    private void decObservable(Observable<CloudResponse<User>> observable) {
         observable.compose(RxComposer.<User>handleCloudResponse())
                 .flatMap(new Function<User, ObservableSource<User>>() {
                     @Override

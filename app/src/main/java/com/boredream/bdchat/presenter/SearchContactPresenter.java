@@ -1,6 +1,6 @@
 package com.boredream.bdchat.presenter;
 
-import com.boredream.bdcodehelper.entity.BaseResponse;
+import com.boredream.bdcodehelper.entity.ListResponse;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.DefaultDisposableObserver;
 import com.boredream.bdcodehelper.net.HttpRequest;
@@ -40,7 +40,7 @@ public class SearchContactPresenter implements SearchContactContract.Presenter {
 
         HttpRequest.getSingleton()
                 .getUsersByUsername(searchKey, page, PAGE_COUNT)
-                .compose(RxComposer.<BaseResponse<User>>schedulers())
+                .compose(RxComposer.<ListResponse<User>>schedulers())
                 .compose(RxComposer.<User>handleListResponse())
                 .subscribe(new DefaultDisposableObserver<ArrayList<User>>(view) {
 

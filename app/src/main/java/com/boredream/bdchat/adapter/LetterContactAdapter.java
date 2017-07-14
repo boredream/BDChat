@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.boredream.bdchat.R;
+import com.boredream.bdchat.activity.UserDetailActivity;
 import com.boredream.bdchat.base.BaseActivity;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.GlideHelper;
@@ -103,7 +104,7 @@ public class LetterContactAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RongIM.getInstance().startPrivateChat(context, user.getObjectId(), user.getNickname());
+                UserDetailActivity.start(context, user.getObjectId());
             }
         });
 

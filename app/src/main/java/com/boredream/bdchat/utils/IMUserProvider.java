@@ -3,7 +3,7 @@ package com.boredream.bdchat.utils;
 import android.net.Uri;
 
 import com.boredream.bdchat.entity.GetContactsCompleteEvent;
-import com.boredream.bdcodehelper.entity.BaseResponse;
+import com.boredream.bdcodehelper.entity.CloudResponse;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.HttpRequest;
 import com.boredream.bdcodehelper.net.RxComposer;
@@ -45,18 +45,15 @@ public class IMUserProvider implements RongIM.UserInfoProvider {
      */
     public static void syncAllContacts() {
         // 服务器获取全部好友更新到缓存和数据库中
-
-        // TODO: 2017/7/4 get my friends
-
-        // TODO: 2017/7/4 服务端权限记得改回来，user的find
-
         HttpRequest.getSingleton()
-                .getUsersByUsernames(null)
-                .compose(RxComposer.<BaseResponse<User>>schedulers())
-                .subscribe(new DisposableObserver<BaseResponse<User>>() {
+                .getApiService()
+                .getFriends()
+                .compose(RxComposer.<CloudResponse<ArrayList<User>>>schedulers())
+                .subscribe(new DisposableObserver<CloudResponse<ArrayList<User>>>() {
+
                     @Override
-                    public void onNext(@NonNull BaseResponse<User> response) {
-                        ArrayList<User> results = response.getResults();
+                    public void onNext(@NonNull CloudResponse<ArrayList<User>> response) {
+                        ArrayList<User> results = response.getResult();
                         if (results == null) {
                             return;
                         }
