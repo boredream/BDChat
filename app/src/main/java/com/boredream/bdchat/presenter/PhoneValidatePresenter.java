@@ -31,7 +31,9 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
         Map<String, Object> params = new HashMap<>();
         params.put("mobilePhoneNumber", phone);
         // TODO: 2017/7/4 Object?
-        HttpRequest.getSingleton().getApiService().requestSmsCode(params)
+        HttpRequest.getSingleton()
+                .getApiService()
+                .requestSmsCode(params)
                 .compose(RxComposer.schedulers())
                 .subscribe(new DefaultDisposableObserver<Object>(view){
                     @Override

@@ -2,6 +2,7 @@ package com.boredream.bdchat.base;
 
 import android.app.Application;
 
+import com.boredream.bdchat.receiver.MessageReceiver;
 import com.boredream.bdchat.utils.IMUserProvider;
 import com.boredream.bdcodehelper.base.AppKeeper;
 
@@ -15,5 +16,6 @@ public class BaseApplication extends Application {
         AppKeeper.init(this);
         RongIM.init(this);
         RongIM.setUserInfoProvider(new IMUserProvider(), true);
+        RongIM.setOnReceiveMessageListener(new MessageReceiver());
     }
 }
