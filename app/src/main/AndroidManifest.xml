@@ -24,6 +24,8 @@
         <activity android:name=".activity.UserDetailActivity" />
         <activity android:name=".activity.SearchContactActivity" />
         <activity android:name=".activity.NewContactActivity" />
+        <activity android:name=".activity.EditUserInfoActivity" />
+        <activity android:name=".activity.EditNicknameActivity" />
         <activity android:name=".activity.ConversationActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

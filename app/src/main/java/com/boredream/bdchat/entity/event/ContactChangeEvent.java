@@ -5,6 +5,7 @@ import com.boredream.bdcodehelper.entity.User;
 public class ContactChangeEvent {
 
     public static final int TYPE_ADD = 1;
+    public static final int TYPE_CHANG = 2;
 
     private int type;
     private User user;

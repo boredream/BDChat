@@ -13,6 +13,7 @@ import com.boredream.bdchat.base.BaseActivity;
 import com.boredream.bdchat.presenter.UserDetailContract;
 import com.boredream.bdchat.presenter.UserDetailPresenter;
 import com.boredream.bdchat.utils.IMUserProvider;
+import com.boredream.bdchat.view.UserCardView;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.GlideHelper;
 import com.boredream.bdcodehelper.view.TitleBarView;
@@ -23,8 +24,7 @@ public class UserDetailActivity extends BaseActivity implements UserDetailContra
 
     private UserDetailPresenter presenter;
     private TitleBarView titlebar;
-    private ImageView iv_avatar;
-    private TextView tv_username;
+    private UserCardView usercard;
     private String userId;
     private Button btn;
 
@@ -50,8 +50,7 @@ public class UserDetailActivity extends BaseActivity implements UserDetailContra
         titlebar = (TitleBarView) findViewById(R.id.titlebar);
         titlebar.setLeftBack(this);
         titlebar.setTitleText("详细资料");
-        iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
-        tv_username = (TextView) findViewById(R.id.tv_username);
+        usercard = (UserCardView) findViewById(R.id.usercard);
         btn = (Button) findViewById(R.id.btn);
     }
 
@@ -62,8 +61,7 @@ public class UserDetailActivity extends BaseActivity implements UserDetailContra
 
     @Override
     public void loadUserDetailSuccess(final User user) {
-        GlideHelper.loadImg(iv_avatar, user.getAvatarUrl());
-        tv_username.setText(user.getNickname());
+        usercard.setUserInfo(user);
 
         final boolean isFriend = IMUserProvider.allContacts.contains(user);
         btn.setVisibility(View.VISIBLE);

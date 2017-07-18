@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_marginTop="@dimen/margin_medium"
     android:layout_width="match_parent"
     android:paddingLeft="@dimen/margin_medium"
     android:paddingRight="@dimen/margin_medium"
@@ -25,7 +24,7 @@
 
     <TextView
         android:id="@+id/tv_userid"
-        style="@style/TextViewBody"
+        style="@style/TextViewCaption"
         android:layout_below="@id/tv_username"
         android:layout_alignLeft="@id/tv_username"
         android:layout_marginTop="@dimen/margin_tiny"

@@ -11,7 +11,13 @@
 
     </com.boredream.bdcodehelper.view.TitleBarView>
 
-    <include layout="@layout/include_user_card" />
+    <com.boredream.bdchat.view.UserCardView
+        android:id="@+id/usercard"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.boredream.bdchat.view.UserCardView>
 
     <Button
         android:id="@+id/btn"
