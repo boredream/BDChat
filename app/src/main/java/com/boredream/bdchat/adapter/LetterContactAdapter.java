@@ -31,11 +31,8 @@ public class LetterContactAdapter extends BaseAdapter {
     private List<User> users = new ArrayList<>();
     private Map<String, Integer> indexMap = new HashMap<>();
 
-    public List<User> getUsers() {
-        return users;
-    }
-
     public void setUsers(List<User> users) {
+        // TODO: 2017/7/18 recyclerView 的 悬浮header效果
         Collections.sort(users, new Comparator<User>() {
             @Override
             public int compare(User lhs, User rhs) {

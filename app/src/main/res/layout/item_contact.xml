@@ -16,8 +16,20 @@
     <TextView
         android:id="@+id/tv_name"
         style="@style/TextViewSubhead"
-        android:layout_width="match_parent"
+        android:singleLine="true"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_medium" />
+
+    <Button
+        android:id="@+id/btn_apply"
+        android:visibility="gone"
+        style="@style/ButtonPrimary"
+        android:text="同意"
+        android:textSize="@dimen/txtsize_subhead"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_width="64dp"
+        android:layout_height="36dp" />
 
 </LinearLayout>

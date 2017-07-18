@@ -1,6 +1,7 @@
 package com.boredream.bdchat.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,8 @@ import com.boredream.bdchat.R;
 import com.boredream.bdchat.activity.NewContactActivity;
 import com.boredream.bdchat.adapter.LetterContactAdapter;
 import com.boredream.bdchat.base.BaseFragment;
-import com.boredream.bdchat.entity.GetContactsCompleteEvent;
+import com.boredream.bdchat.entity.event.ContactChangeEvent;
+import com.boredream.bdchat.entity.event.GetContactsCompleteEvent;
 import com.boredream.bdchat.utils.IMUserProvider;
 import com.boredream.bdcodehelper.base.UserInfoKeeper;
 import com.boredream.bdcodehelper.entity.User;
@@ -35,6 +37,18 @@ public class ContactFragment extends BaseFragment implements PositionBar.OnPosit
     private ListView lv;
     private PositionBar pb_letter;
     private LetterContactAdapter adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,26 +76,29 @@ public class ContactFragment extends BaseFragment implements PositionBar.OnPosit
         lv.setAdapter(adapter);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        EventBus.getDefault().unregister(this);
-    }
-
     /**
-     * 收到好友更新完成时响应此事件
+     * 收到获取好友完成时响应此事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getContactComplete(GetContactsCompleteEvent event) {
         if (event.isSuccess()) {
             LogUtils.showLog("GetContactsComplete");
             refreshMembers();
+        }
+    }
+
+    /**
+     * 收到好友更新时响应此事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void contactChanged(ContactChangeEvent event) {
+        LogUtils.showLog("contactChanged " + event.getType() + " : " + event.getUser().getNickname());
+
+        switch (event.getType()) {
+            case ContactChangeEvent.TYPE_ADD:
+                IMUserProvider.allContacts.add(event.getUser());
+                refreshMembers();
+                break;
         }
     }
 

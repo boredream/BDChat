@@ -1,4 +1,4 @@
-package com.boredream.bdchat.entity;
+package com.boredream.bdchat.entity.event;
 
 public class GetContactsCompleteEvent {
 

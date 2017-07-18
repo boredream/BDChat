@@ -18,7 +18,10 @@ public class MessageReceiver implements RongIMClient.OnReceiveMessageListener {
     @Override
     public boolean onReceived(Message message, int left) {
         if (message.getConversationType() == Conversation.ConversationType.SYSTEM) {
+            // 系統消息作为推送使用，融云的推送要钱
             Log.i("DDD", "onReceived: system message");
+
+            // TODO: 2017/7/18 new friend apply
             return true;
         }
 

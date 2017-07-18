@@ -2,7 +2,7 @@ package com.boredream.bdchat.utils;
 
 import android.net.Uri;
 
-import com.boredream.bdchat.entity.GetContactsCompleteEvent;
+import com.boredream.bdchat.entity.event.GetContactsCompleteEvent;
 import com.boredream.bdcodehelper.entity.CloudResponse;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.HttpRequest;

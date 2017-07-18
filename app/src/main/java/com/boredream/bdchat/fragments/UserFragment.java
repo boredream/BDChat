@@ -12,32 +12,21 @@ import android.widget.TextView;
 
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.base.BaseFragment;
+import com.boredream.bdchat.view.UserCardView;
 import com.boredream.bdcodehelper.adapter.SettingRecyclerAdapter;
-import com.boredream.bdcodehelper.base.BoreBaseEntity;
 import com.boredream.bdcodehelper.base.UserInfoKeeper;
 import com.boredream.bdcodehelper.entity.SettingItem;
 import com.boredream.bdcodehelper.entity.User;
-import com.boredream.bdcodehelper.net.HttpRequest;
-import com.boredream.bdcodehelper.net.RxComposer;
 import com.boredream.bdcodehelper.view.TitleBarView;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.observers.DisposableObserver;
-import io.rong.message.TextMessage;
 
 public class UserFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 
 	private View view;
 	private TitleBarView title;
-	private ImageView iv_avatar;
-	private TextView tv_username;
+	private UserCardView usercard;
 	private RecyclerView rv_user;
 
 	@Override
@@ -57,23 +46,13 @@ public class UserFragment extends BaseFragment implements AdapterView.OnItemClic
 			return;
 		}
 
-		Glide.with(getActivity()).load(currentUser.getAvatarUrl());
-		tv_username.setText(currentUser.getNickname());
-
-		// FIXME: 2017/7/4
-		tv_username.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-			}
-		});
-
+		usercard.setUserInfo(currentUser);
 	}
 
 	private void initView() {
 		title = (TitleBarView) view.findViewById(R.id.title);
 		title.setTitleText("我的");
-		iv_avatar = (ImageView) view.findViewById(R.id.iv_avatar);
-		tv_username = (TextView) view.findViewById(R.id.tv_username);
+		usercard = (UserCardView) view.findViewById(R.id.usercard);
 		rv_user = (RecyclerView) view.findViewById(R.id.rv_user);
 		rv_user.setLayoutManager(new LinearLayoutManager(getActivity()));
 

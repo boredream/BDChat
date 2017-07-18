@@ -13,7 +13,7 @@ public interface NewContactContract {
 
         void getFriendRequestsSuccess(ArrayList<User> users);
 
-        void applyFriendRequestSuccess(String userId);
+        void applyFriendRequestSuccess(User user);
 
     }
 
@@ -21,7 +21,7 @@ public interface NewContactContract {
 
         void getFriendRequests();
 
-        void applyFriendRequest(String userId);
+        void applyFriendRequest(User user);
 
     }
 }

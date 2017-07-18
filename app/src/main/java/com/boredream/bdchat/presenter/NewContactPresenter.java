@@ -1,5 +1,6 @@
 package com.boredream.bdchat.presenter;
 
+import com.boredream.bdcodehelper.base.LeanCloudObject;
 import com.boredream.bdcodehelper.entity.CloudResponse;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.net.DefaultDisposableObserver;
@@ -36,20 +37,20 @@ public class NewContactPresenter implements NewContactContract.Presenter {
     }
 
     @Override
-    public void applyFriendRequest(final String userId) {
+    public void applyFriendRequest(final User user) {
         Map<String, String> request = new HashMap<>();
-        request.put("userId", userId);
+        request.put("userId", user.getObjectId());
         HttpRequest.getSingleton()
                 .getApiService()
                 .applyFriendRequest(request)
-                .compose(RxComposer.<CloudResponse<Object>>schedulers())
-                .compose(RxComposer.handleCloudResponse())
-                .subscribe(new DefaultDisposableObserver<Object>(view){
+                .compose(RxComposer.<CloudResponse<LeanCloudObject>>schedulers())
+                .compose(RxComposer.<LeanCloudObject>handleCloudResponse())
+                .subscribe(new DefaultDisposableObserver<LeanCloudObject>(view){
                     @Override
-                    public void onNext(Object o) {
+                    public void onNext(LeanCloudObject o) {
                         super.onNext(o);
 
-                        view.applyFriendRequestSuccess(userId);
+                        view.applyFriendRequestSuccess(user);
                     }
                 });
     }
