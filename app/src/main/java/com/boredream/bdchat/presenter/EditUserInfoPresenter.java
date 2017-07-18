@@ -34,8 +34,9 @@ public class EditUserInfoPresenter implements EditUserInfoContract.Presenter {
     @Override
     public void updateUserAvatar(File avatarImgFile) {
         final User currentUser = UserInfoKeeper.getInstance().getCurrentUser();
-        final String filename = "avatar_" + System.currentTimeMillis() + ".jpg";
+        final String filename = avatarImgFile.getName();
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), avatarImgFile);
+
         final HttpRequest.ApiService apiService = HttpRequest.getSingleton().getApiService();
         apiService.fileUpload(filename, requestBody)
                 .flatMap(new Function<FileUploadResponse, ObservableSource<LeanCloudObject>>() {
