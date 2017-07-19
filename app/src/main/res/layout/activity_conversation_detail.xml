@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.boredream.bdcodehelper.view.TitleBarView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+    </com.boredream.bdcodehelper.view.TitleBarView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_member"
+        style="@style/RecyclerView"
+        android:padding="@dimen/margin_medium"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+    
+    <com.boredream.bdcodehelper.view.SettingItemView
+        android:id="@+id/setting_clear"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+    </com.boredream.bdcodehelper.view.SettingItemView>
+
+    <Button
+        android:id="@+id/btn_quit"
+        style="@style/ButtonPrimary"
+        android:text="删除并退出"
+        android:layout_margin="@dimen/margin_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

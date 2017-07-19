@@ -14,7 +14,6 @@ import com.boredream.bdchat.base.BaseFragment;
 import com.boredream.bdchat.entity.event.ContactChangeEvent;
 import com.boredream.bdchat.entity.event.GetContactsCompleteEvent;
 import com.boredream.bdchat.utils.IMUserProvider;
-import com.boredream.bdcodehelper.base.UserInfoKeeper;
 import com.boredream.bdcodehelper.entity.User;
 import com.boredream.bdcodehelper.utils.LogUtils;
 import com.boredream.bdcodehelper.view.PositionBar;
@@ -24,7 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,18 +108,8 @@ public class ContactFragment extends BaseFragment implements PositionBar.OnPosit
     }
 
     private void refreshMembers() {
-        // 过滤当前用户，不显示在通讯录中
-        List<User> allUsers = IMUserProvider.allContacts;
-
-        // FIXME: 2017/7/5 使用我的好友替代全部人员
-        Iterator<User> iterator = allUsers.iterator();
-        for (; iterator.hasNext(); ) {
-            User user = iterator.next();
-            if (UserInfoKeeper.getInstance().getCurrentUser().getObjectId().equals(user.getObjectId())) {
-                iterator.remove();
-                break;
-            }
-        }
+        List<User> allUsers = new ArrayList<>();
+        allUsers.addAll(IMUserProvider.allContacts);
 
         adapter.setUsers(allUsers);
         adapter.notifyDataSetChanged();

@@ -15,7 +15,7 @@ import com.boredream.bdcodehelper.view.TitleBarView;
 public class EditNicknameActivity extends BaseActivity implements EditUserInfoContract.View {
 
     private EditUserInfoPresenter presenter;
-    private TitleBarView titlebar;
+    private TitleBarView title;
     private EditText et_nickname;
 
     @Override
@@ -38,13 +38,13 @@ public class EditNicknameActivity extends BaseActivity implements EditUserInfoCo
 
     private void initView() {
         presenter = new EditUserInfoPresenter(this);
-        titlebar = (TitleBarView) findViewById(R.id.titlebar);
+        title = (TitleBarView) findViewById(R.id.title);
         et_nickname = (EditText) findViewById(R.id.et_nickname);
 
-        titlebar.setTitleText("更改名字");
-        titlebar.setLeftBack(this);
-        titlebar.setRightText("保存");
-        titlebar.setRightOnClickListener(new View.OnClickListener() {
+        title.setTitleText("更改名字");
+        title.setLeftBack(this);
+        title.setRightText("保存");
+        title.setRightOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String nickname = et_nickname.getText().toString().trim();

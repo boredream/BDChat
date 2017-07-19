@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.base.BaseActivity;
@@ -15,7 +13,6 @@ import com.boredream.bdchat.presenter.UserDetailPresenter;
 import com.boredream.bdchat.utils.IMUserProvider;
 import com.boredream.bdchat.view.UserCardView;
 import com.boredream.bdcodehelper.entity.User;
-import com.boredream.bdcodehelper.net.GlideHelper;
 import com.boredream.bdcodehelper.view.TitleBarView;
 
 import io.rong.imkit.RongIM;
@@ -23,7 +20,7 @@ import io.rong.imkit.RongIM;
 public class UserDetailActivity extends BaseActivity implements UserDetailContract.View {
 
     private UserDetailPresenter presenter;
-    private TitleBarView titlebar;
+    private TitleBarView title;
     private UserCardView usercard;
     private String userId;
     private Button btn;
@@ -47,9 +44,9 @@ public class UserDetailActivity extends BaseActivity implements UserDetailContra
     private void initView() {
         presenter = new UserDetailPresenter(this);
 
-        titlebar = (TitleBarView) findViewById(R.id.titlebar);
-        titlebar.setLeftBack(this);
-        titlebar.setTitleText("详细资料");
+        title = (TitleBarView) findViewById(R.id.title);
+        title.setLeftBack(this);
+        title.setTitleText("详细资料");
         usercard = (UserCardView) findViewById(R.id.usercard);
         btn = (Button) findViewById(R.id.btn);
     }

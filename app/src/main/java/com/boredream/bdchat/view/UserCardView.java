@@ -40,7 +40,7 @@ public class UserCardView extends FrameLayout {
     }
 
     public void setUserInfo(User user) {
-        GlideHelper.loadOvalImg(iv_avatar, user.getAvatarUrl());
+        GlideHelper.loadImg(iv_avatar, user.getAvatarUrl());
         tv_username.setText(user.getNickname());
         tv_userid.setText("手机号：" + user.getUsername());
     }

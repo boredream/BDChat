@@ -38,7 +38,7 @@ public class EditUserInfoActivity extends BaseActivity implements View.OnClickLi
     private static final int REQUEST_CODE_EDIT_NICKNAME = 110;
 
     private EditUserInfoPresenter presenter;
-    private TitleBarView titlebar;
+    private TitleBarView title;
     private ImageView iv_avatar;
     private LinearLayout ll_avatar;
     private TextView tv_username;
@@ -65,14 +65,14 @@ public class EditUserInfoActivity extends BaseActivity implements View.OnClickLi
 
     private void initView() {
         presenter = new EditUserInfoPresenter(this);
-        titlebar = (TitleBarView) findViewById(R.id.titlebar);
+        title = (TitleBarView) findViewById(R.id.title);
         iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
         ll_avatar = (LinearLayout) findViewById(R.id.ll_avatar);
         tv_username = (TextView) findViewById(R.id.tv_username);
         ll_username = (LinearLayout) findViewById(R.id.ll_username);
 
-        titlebar.setTitleText("个人信息");
-        titlebar.setLeftBack(this);
+        title.setTitleText("个人信息");
+        title.setLeftBack(this);
         ll_avatar.setOnClickListener(this);
         ll_username.setOnClickListener(this);
     }

@@ -27,8 +27,8 @@ import io.rong.imkit.RongIM;
  */
 public class LetterContactAdapter extends BaseAdapter {
 
-    private BaseActivity context;
-    private List<User> users = new ArrayList<>();
+    protected BaseActivity context;
+    protected List<User> users = new ArrayList<>();
     private Map<String, Integer> indexMap = new HashMap<>();
 
     public void setUsers(List<User> users) {
@@ -84,7 +84,14 @@ public class LetterContactAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        setData(position, convertView, holder);
+
+        return convertView;
+    }
+
+    protected void setData(int position, View convertView, ViewHolder holder) {
         final User user = getItem(position);
+        holder.bindData(user);
 
         String firstLetter = StringUtils.getFirstLetter(user.getLetter());
         if (position == getPositionByLetter(firstLetter)) {
@@ -94,29 +101,20 @@ public class LetterContactAdapter extends BaseAdapter {
             holder.tv_first_letter.setVisibility(View.GONE);
         }
 
-        GlideHelper.loadImg(holder.iv_image, user.getAvatarUrl());
-
-        holder.tv_name.setText(user.getNickname());
-
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UserDetailActivity.start(context, user.getObjectId());
             }
         });
-
-        return convertView;
     }
 
-    public static class ViewHolder {
+    public static class ViewHolder extends UserViewHolder{
         public TextView tv_first_letter;
-        public ImageView iv_image;
-        public TextView tv_name;
 
         public ViewHolder(final View itemView) {
+            super(itemView);
             tv_first_letter = (TextView) itemView.findViewById(R.id.tv_first_letter);
-            iv_image = (ImageView) itemView.findViewById(R.id.iv_image);
-            tv_name = (TextView) itemView.findViewById(R.id.tv_name);
         }
     }
 

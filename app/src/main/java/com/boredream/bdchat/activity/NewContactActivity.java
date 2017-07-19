@@ -22,7 +22,7 @@ public class NewContactActivity extends BaseActivity implements NewContactContra
 
     private NewContactPresenter presenter;
 
-    private TitleBarView titlebar;
+    private TitleBarView title;
     private RecyclerView rv;
     private ContactAdapter adapter;
     private List<User> users = new ArrayList<>();
@@ -40,9 +40,9 @@ public class NewContactActivity extends BaseActivity implements NewContactContra
     private void initView() {
         presenter = new NewContactPresenter(this);
 
-        titlebar = (TitleBarView) findViewById(R.id.titlebar);
-        titlebar.setTitleText("新的朋友");
-        titlebar.setLeftBack(this);
+        title = (TitleBarView) findViewById(R.id.title);
+        title.setTitleText("新的朋友");
+        title.setLeftBack(this);
         rv = (RecyclerView) findViewById(R.id.rv);
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ContactAdapter(this, users, ContactAdapter.TYPE_NEW_FRIEND);

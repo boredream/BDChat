@@ -6,13 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.boredream.bdchat.R;
-import com.boredream.bdchat.activity.UserDetailActivity;
 import com.boredream.bdcodehelper.entity.User;
-import com.boredream.bdcodehelper.net.GlideHelper;
 
 import java.util.List;
 
@@ -40,16 +36,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         return datas.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView iv_image;
-        public TextView tv_name;
+    public static class ViewHolder extends UserViewHolder {
         public Button btn_apply;
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            iv_image = (ImageView) itemView.findViewById(R.id.iv_image);
-            tv_name = (TextView) itemView.findViewById(R.id.tv_name);
-            this.btn_apply = (Button) itemView.findViewById(R.id.btn_apply);
+            btn_apply = (Button) itemView.findViewById(R.id.btn_apply);
         }
     }
 
@@ -62,15 +54,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final User data = datas.get(position);
-
-        GlideHelper.loadImg(holder.iv_image, data.getAvatarUrl());
-        holder.tv_name.setText(data.getNickname());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserDetailActivity.start(context, data.getObjectId());
-            }
-        });
+        holder.bindData(data);
 
         if(type == TYPE_NEW_FRIEND) {
             holder.btn_apply.setVisibility(View.VISIBLE);

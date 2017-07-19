@@ -85,12 +85,23 @@ public class IMUserProvider implements RongIM.UserInfoProvider {
                 });
     }
 
-    private static UserInfo user2contact(User user) {
+    public static UserInfo user2contact(User user) {
         if (user == null) return null;
         String avatarUrl = user.getAvatarUrl() == null ? "" : user.getAvatarUrl();
         return new UserInfo(user.getObjectId(),
                     user.getNickname(),
                     Uri.parse(avatarUrl));
+    }
+
+    public static User contact2user(UserInfo contact) {
+        if (contact == null) return null;
+        User user = new User();
+        user.setObjectId(contact.getUserId());
+        user.setNickname(contact.getName());
+        if(contact.getPortraitUri() != null) {
+            user.setAvatarUrl(contact.getPortraitUri().toString());
+        }
+        return user;
     }
 
 }

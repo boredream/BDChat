@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <com.boredream.bdcodehelper.view.TitleBarView
-        android:id="@+id/titlebar"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -17,6 +17,7 @@
         android:layout_marginTop="@dimen/margin_medium"
         android:layout_marginLeft="@dimen/margin_medium"
         android:layout_marginRight="@dimen/margin_medium"
+        android:maxEms="10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
