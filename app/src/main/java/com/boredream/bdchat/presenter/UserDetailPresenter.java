@@ -42,12 +42,13 @@ public class UserDetailPresenter implements UserDetailContract.Presenter {
                 .getApiService()
                 .friendRequest(request)
                 .compose(RxComposer.<CloudResponse<User>>schedulers())
-                .subscribe(new DefaultDisposableObserver<CloudResponse<User>>(view){
+                .compose(RxComposer.<User>handleCloudResponse())
+                .subscribe(new DefaultDisposableObserver<User>(view){
                     @Override
-                    public void onNext(CloudResponse<User> userBaseResponse) {
-                        super.onNext(userBaseResponse);
-                        // TODO: 2017/7/14
-                        Log.i("DDD", "onNext: ~~~~~~~~~~~~~~~~~");
+                    public void onNext(User user) {
+                        super.onNext(user);
+
+                        view.friendRequestSuccess(user);
                     }
                 });
     }

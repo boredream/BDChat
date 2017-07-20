@@ -41,7 +41,6 @@ public class ConvListFragment extends BaseFragment {
                 .getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment == null) {
             fragment = new ConversationListFragment();
-            // TODO listFragment.setAdapter(new ConversationListAdapterEx(RongContext.getInstance()));
             Uri uri = Uri.parse("rong://" + activity.getApplicationInfo().packageName).buildUpon()
                         .appendPath("conversationlist")
                         .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(), "false") //设置私聊会话是否聚合显示

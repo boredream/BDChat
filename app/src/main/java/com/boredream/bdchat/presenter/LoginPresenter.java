@@ -26,7 +26,6 @@ import io.reactivex.observers.DisposableObserver;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 
-// TODO: 2017/6/30 如何把业务功能，比如这里的登陆，封装到model里，在特殊情况下（还要im登陆）如何处理
 public class LoginPresenter implements LoginContract.Presenter {
 
     private static final int SPLASH_DUR_MIN_TIME = 1500;

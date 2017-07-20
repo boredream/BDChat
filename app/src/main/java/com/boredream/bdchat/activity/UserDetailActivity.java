@@ -75,4 +75,9 @@ public class UserDetailActivity extends BaseActivity implements UserDetailContra
             }
         });
     }
+
+    @Override
+    public void friendRequestSuccess(User user) {
+        showTip("发送好友请求成功");
+    }
 }

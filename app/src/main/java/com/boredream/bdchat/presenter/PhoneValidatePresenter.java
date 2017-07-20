@@ -30,7 +30,6 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
 
         Map<String, Object> params = new HashMap<>();
         params.put("mobilePhoneNumber", phone);
-        // TODO: 2017/7/4 Object?
         HttpRequest.getSingleton()
                 .getApiService()
                 .requestSmsCode(params)
@@ -74,14 +73,13 @@ public class PhoneValidatePresenter implements PhoneValidateContract.Presenter {
 
         Map<String, Object> params = new HashMap<>();
         params.put("password", newPsw);
-        // TODO: 2017/7/4 Object?
         HttpRequest.getSingleton()
                 .getApiService()
                 .resetPasswordBySmsCode(smsCode, params).compose(RxComposer.schedulers())
                 .subscribe(new DefaultDisposableObserver<Object>(view){
                     @Override
-                    public void onNext(Object user) {
-                        super.onNext(user);
+                    public void onNext(Object o) {
+                        super.onNext(o);
 
                         view.forgetUserSuccess(newPsw);
                     }

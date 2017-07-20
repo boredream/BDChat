@@ -11,6 +11,7 @@ public interface UserDetailContract {
 
         void loadUserDetailSuccess(User user);
 
+        void friendRequestSuccess(User user);
     }
 
     interface Presenter extends BasePresenter {
