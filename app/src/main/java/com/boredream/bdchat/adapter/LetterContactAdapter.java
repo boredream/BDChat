@@ -1,16 +1,16 @@
 package com.boredream.bdchat.adapter;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.boredream.bdchat.R;
+import com.boredream.bdchat.activity.NewContactActivity;
 import com.boredream.bdchat.activity.UserDetailActivity;
 import com.boredream.bdchat.base.BaseActivity;
 import com.boredream.bdcodehelper.entity.User;
-import com.boredream.bdcodehelper.net.GlideHelper;
 import com.boredream.bdcodehelper.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -20,19 +20,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.rong.imkit.RongIM;
-
 /**
  * 成员列表 Adapter
  */
 public class LetterContactAdapter extends BaseAdapter {
 
-    protected BaseActivity context;
-    protected List<User> users = new ArrayList<>();
+    private BaseActivity context;
+    private List<User> users = new ArrayList<>();
     private Map<String, Integer> indexMap = new HashMap<>();
 
     public void setUsers(List<User> users) {
-        // TODO: 2017/7/18 recyclerView 的 悬浮header效果
         Collections.sort(users, new Comparator<User>() {
             @Override
             public int compare(User lhs, User rhs) {
@@ -43,7 +40,8 @@ public class LetterContactAdapter extends BaseAdapter {
             User user = users.get(index);
             String firstLetter = StringUtils.getFirstLetter(user.getLetter());
             if (!indexMap.containsKey(firstLetter)) {
-                indexMap.put(firstLetter, index);
+                // 多一个新的朋友
+                indexMap.put(firstLetter, index + 1);
             }
         }
         this.users = users;
@@ -60,7 +58,7 @@ public class LetterContactAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return users.size();
+        return 1 + users.size();
     }
 
     @Override
@@ -84,29 +82,37 @@ public class LetterContactAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        setData(position, convertView, holder);
-
-        return convertView;
-    }
-
-    protected void setData(int position, View convertView, ViewHolder holder) {
-        final User user = getItem(position);
-        holder.bindData(user);
-
-        String firstLetter = StringUtils.getFirstLetter(user.getLetter());
-        if (position == getPositionByLetter(firstLetter)) {
-            holder.tv_first_letter.setVisibility(View.VISIBLE);
-            holder.tv_first_letter.setText(String.valueOf(firstLetter));
-        } else {
+        if(position == 0) {
+            // 新的朋友
             holder.tv_first_letter.setVisibility(View.GONE);
-        }
+            holder.iv_image.setImageResource(R.drawable.default_image);
+            holder.tv_name.setText("新的朋友");
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, NewContactActivity.class));
+                }
+            });
+        } else {
+            final User user = getItem(position - 1);
+            holder.bindData(user);
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserDetailActivity.start(context, user.getObjectId());
+            String firstLetter = StringUtils.getFirstLetter(user.getLetter());
+            if (position == getPositionByLetter(firstLetter)) {
+                holder.tv_first_letter.setVisibility(View.VISIBLE);
+                holder.tv_first_letter.setText(String.valueOf(firstLetter));
+            } else {
+                holder.tv_first_letter.setVisibility(View.GONE);
             }
-        });
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    UserDetailActivity.start(context, user.getObjectId());
+                }
+            });
+        }
+        return convertView;
     }
 
     public static class ViewHolder extends UserViewHolder{

@@ -21,27 +21,20 @@ import io.reactivex.observers.DisposableObserver;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.userInfoCache.RongUserInfoManager;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Discussion;
 import io.rong.imlib.model.UserInfo;
 
 public class ConversationDetailPresenter implements ConversationDetailContract.Presenter {
 
     private final ConversationDetailContract.View view;
-    private boolean isHost;
 
     public ConversationDetailPresenter(ConversationDetailContract.View view) {
         this.view = view;
     }
 
     @Override
-    public void getUserInfo(List<String> userIds) {
-
-    }
-
-    @Override
     public void getMemberList(final boolean isGroup, final String targetId) {
-        isHost = false;
-
         // TODO: 2017/7/19 不需要loading的咋处理更好
 
         final Observable<ArrayList<User>> observable;
@@ -96,7 +89,7 @@ public class ConversationDetailPresenter implements ConversationDetailContract.P
         observable.subscribe(new DisposableObserver<ArrayList<User>>() {
             @Override
             public void onNext(ArrayList<User> users) {
-                view.getUserInfoSuccess(users);
+                view.getMemberListSuccess(users);
             }
 
             @Override
@@ -113,13 +106,8 @@ public class ConversationDetailPresenter implements ConversationDetailContract.P
     }
 
     @Override
-    public void addMember(final Discussion discussion, final ArrayList<User> chooseUsers) {
+    public void addMember(final String discussionId, final ArrayList<User> chooseUsers) {
         if(CollectionUtils.isEmpty(chooseUsers)) {
-            return;
-        }
-
-        if(discussion == null) {
-            view.showTip("群组信息获取失败");
             return;
         }
 
@@ -131,7 +119,7 @@ public class ConversationDetailPresenter implements ConversationDetailContract.P
                             userIds.add(user.getObjectId());
                         }
 
-                        RongIM.getInstance().addMemberToDiscussion(discussion.getId(), userIds, new RongIMClient.OperationCallback() {
+                        RongIM.getInstance().addMemberToDiscussion(discussionId, userIds, new RongIMClient.OperationCallback() {
                             @Override
                             public void onSuccess() {
                                 e.onNext(chooseUsers);
@@ -156,13 +144,8 @@ public class ConversationDetailPresenter implements ConversationDetailContract.P
     }
 
     @Override
-    public void removeMember(final Discussion discussion, final ArrayList<User> chooseUsers) {
+    public void removeMember(final String discussionId, final ArrayList<User> chooseUsers) {
         if(CollectionUtils.isEmpty(chooseUsers)) {
-            return;
-        }
-
-        if(discussion == null) {
-            view.showTip("群组信息获取失败");
             return;
         }
 
@@ -172,7 +155,7 @@ public class ConversationDetailPresenter implements ConversationDetailContract.P
         Observable.create(new ObservableOnSubscribe<User>() {
                     @Override
                     public void subscribe(@NonNull final ObservableEmitter<User> e) throws Exception {
-                        RongIM.getInstance().removeMemberFromDiscussion(discussion.getId(), user.getObjectId(), new RongIMClient.OperationCallback() {
+                        RongIM.getInstance().removeMemberFromDiscussion(discussionId, user.getObjectId(), new RongIMClient.OperationCallback() {
                             @Override
                             public void onSuccess() {
                                 e.onNext(user);
@@ -194,5 +177,66 @@ public class ConversationDetailPresenter implements ConversationDetailContract.P
                         view.removeMemberSuccess(user);
                     }
                 });
+    }
+
+    @Override
+    public void clearMessage(final String discussionId) {
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<Object> e) throws Exception {
+                RongIM.getInstance().deleteMessages(Conversation.ConversationType.DISCUSSION,
+                        discussionId, new RongIMClient.ResultCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean aBoolean) {
+                                if(aBoolean) {
+                                    e.onNext(discussionId);
+                                    e.onComplete();
+                                } else {
+                                    e.onError(new Exception("清除消息失败"));
+                                }
+                            }
+
+                            @Override
+                            public void onError(RongIMClient.ErrorCode errorCode) {
+                                e.onError(new Exception(errorCode.getMessage()));
+                            }
+                        });
+            }
+        }).subscribe(new DefaultDisposableObserver<Object>(view) {
+            @Override
+            public void onNext(Object o) {
+                super.onNext(o);
+
+                view.clearMessageSuccess();
+            }
+        });
+    }
+
+    @Override
+    public void quitDiscussion(final String discussionId) {
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<Object> e) throws Exception {
+                RongIM.getInstance().quitDiscussion(discussionId, new RongIMClient.OperationCallback() {
+                    @Override
+                    public void onSuccess() {
+                        e.onNext(discussionId);
+                        e.onComplete();
+                    }
+
+                    @Override
+                    public void onError(RongIMClient.ErrorCode errorCode) {
+                        e.onError(new Exception(errorCode.getMessage()));
+                    }
+                });
+            }
+        }).subscribe(new DefaultDisposableObserver<Object>(view) {
+            @Override
+            public void onNext(Object o) {
+                super.onNext(o);
+
+                view.quitDiscussionSuccess();
+            }
+        });
     }
 }

@@ -15,6 +15,7 @@
         android:id="@+id/tv_name"
         style="@style/TextViewCaption"
         android:textColor="@color/txt_gray"
+        android:singleLine="true"
         android:layout_width="48dp"
         android:layout_height="wrap_content" />
 

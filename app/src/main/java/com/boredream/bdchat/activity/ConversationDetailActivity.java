@@ -1,6 +1,7 @@
 package com.boredream.bdchat.activity;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +16,7 @@ import com.boredream.bdchat.presenter.ConversationDetailContract;
 import com.boredream.bdchat.presenter.ConversationDetailPresenter;
 import com.boredream.bdcodehelper.base.UserInfoKeeper;
 import com.boredream.bdcodehelper.entity.User;
+import com.boredream.bdcodehelper.utils.DialogUtils;
 import com.boredream.bdcodehelper.view.SettingItemView;
 import com.boredream.bdcodehelper.view.TitleBarView;
 
@@ -34,15 +36,14 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
     private boolean isGroup;
     private String targetId;
     private boolean isHost;
-    private Discussion discussion;
 
     private GroupMemberAdapter adapter;
 
-    public static void start(Context context, boolean isGroup, String targetId) {
+    public static void start(Activity context, boolean isGroup, String targetId, int requestCode) {
         Intent intent = new Intent(context, ConversationDetailActivity.class);
         intent.putExtra("isGroup", isGroup);
         intent.putExtra("targetId", targetId);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -85,12 +86,11 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
     @Override
     public void getDiscussionSuccess(Discussion discussion) {
         if(discussion == null) return;
-        this.discussion = discussion;
         isHost = UserInfoKeeper.getInstance().getCurrentUser().getObjectId().equals(discussion.getCreatorId());
     }
 
     @Override
-    public void getUserInfoSuccess(ArrayList<User> users) {
+    public void getMemberListSuccess(ArrayList<User> users) {
         adapter = new GroupMemberAdapter(this, users, isHost);
         rv_member.setAdapter(adapter);
         adapter.setOnGroupCtrlListener(new GroupMemberAdapter.OnGroupCtrlListener() {
@@ -110,7 +110,7 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
     }
 
     private void addMember(ArrayList<User> chooseUsers) {
-        presenter.addMember(discussion, chooseUsers);
+        presenter.addMember(targetId, chooseUsers);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
     }
 
     private void removeMember(ArrayList<User> chooseUsers) {
-        presenter.removeMember(discussion, chooseUsers);
+        presenter.removeMember(targetId, chooseUsers);
     }
 
     @Override
@@ -131,14 +131,35 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
         adapter.notifyDataSetChanged();
     }
 
+    private void clearMessage() {
+        DialogUtils.showCommonDialog(this, "是否确认清空聊天记录？", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.clearMessage(targetId);
+            }
+        });
+    }
+
+    @Override
+    public void clearMessageSuccess() {
+        showTip("消息清除成功");
+    }
+
+    @Override
+    public void quitDiscussionSuccess() {
+        showTip("退出讨论组");
+        setResult(RESULT_OK);
+        finish();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setting_clear:
-                // TODO: 2017/7/18
+                clearMessage();
                 break;
             case R.id.btn_quit:
-                // TODO: 2017/7/18
+                presenter.quitDiscussion(targetId);
                 break;
         }
     }

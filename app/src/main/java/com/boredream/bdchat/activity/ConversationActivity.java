@@ -1,5 +1,6 @@
 package com.boredream.bdchat.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,6 +13,8 @@ import io.rong.imkit.fragment.ConversationFragment;
 import io.rong.imlib.model.Conversation;
 
 public class ConversationActivity extends BaseActivity {
+
+    private static final int REQUEST_CODE_DETAIL = 110;
 
     private TitleBarView title;
     private ConversationFragment conversation;
@@ -40,9 +43,24 @@ public class ConversationActivity extends BaseActivity {
                 public void onClick(View v) {
                     ConversationDetailActivity.start(ConversationActivity.this,
                             conversationType == Conversation.ConversationType.DISCUSSION,
-                            conversation.getTargetId());
+                            conversation.getTargetId(), REQUEST_CODE_DETAIL);
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode != RESULT_OK) {
+            return;
+        }
+
+        switch (requestCode) {
+            case REQUEST_CODE_DETAIL:
+                finish();
+                break;
         }
     }
 }

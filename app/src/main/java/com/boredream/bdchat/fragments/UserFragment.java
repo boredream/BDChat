@@ -14,6 +14,7 @@ import com.boredream.bdchat.R;
 import com.boredream.bdchat.activity.EditUserInfoActivity;
 import com.boredream.bdchat.base.BaseFragment;
 import com.boredream.bdchat.entity.event.ContactChangeEvent;
+import com.boredream.bdchat.utils.IMUserProvider;
 import com.boredream.bdchat.view.UserCardView;
 import com.boredream.bdcodehelper.adapter.SettingRecyclerAdapter;
 import com.boredream.bdcodehelper.base.UserInfoKeeper;
@@ -103,6 +104,7 @@ public class UserFragment extends BaseFragment implements AdapterView.OnItemClic
 		switch (position) {
 			case 0:
 				UserInfoKeeper.getInstance().logout();
+				IMUserProvider.allContacts.clear();
 				activity.clearIntent2Login();
 				break;
 		}

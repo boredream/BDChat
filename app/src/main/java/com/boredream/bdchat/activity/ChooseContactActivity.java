@@ -86,7 +86,7 @@ public class ChooseContactActivity extends BaseActivity implements PositionBar.O
         lv = (ListView) findViewById(R.id.lv);
         pb_letter = (PositionBar) findViewById(R.id.pb_letter);
         pb_letter.setOnPositionChangedListener(this);
-        adapter = new LetterChooseContactAdapter(this, mode);
+        adapter = new LetterChooseContactAdapter(this);
         lv.setAdapter(adapter);
     }
 
