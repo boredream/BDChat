@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.boredream.bdchat.R;
 import com.boredream.bdchat.base.BaseActivity;
+import com.boredream.bdcodehelper.utils.DisplayUtils;
 import com.boredream.bdcodehelper.view.TitleBarView;
 
 import io.rong.imkit.fragment.ConversationFragment;
@@ -23,10 +24,13 @@ public class ConversationActivity extends BaseActivity {
         setContentView(R.layout.activity_conversation);
 
         title = (TitleBarView) findViewById(R.id.title);
+        title.getTvTitle().setMaxWidth(DisplayUtils.dp2px(this, 180));
+        title.getTvTitle().setTextSize(16);
         title.setTitleText(getIntent().getData().getQueryParameter("title"));
         title.setLeftBack(this);
 
         conversation = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.conversation);
+
         conversationType = conversation.getConversationType();
         if(conversationType == Conversation.ConversationType.DISCUSSION
                 || conversationType == Conversation.ConversationType.PRIVATE) {

@@ -10,7 +10,6 @@ import com.boredream.bdchat.R;
 import com.boredream.bdcodehelper.entity.User;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GroupMemberAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
@@ -20,6 +19,14 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     public ArrayList<User> getUsers() {
         return users;
+    }
+
+    public void addUsers(ArrayList<User> users) {
+        this.users.addAll(users);
+    }
+
+    public void removeUser(User user) {
+        this.users.remove(user);
     }
 
     public GroupMemberAdapter(Context context, ArrayList<User> users, boolean isHost) {

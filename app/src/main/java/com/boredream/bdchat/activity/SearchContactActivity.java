@@ -52,7 +52,7 @@ public class SearchContactActivity extends BaseActivity implements SearchContact
 
         // TODO: 2017/7/13 pull to refresh
 
-        // FIXME: 2017/7/14
+        // FIXME: 2017/7/14 remove me
         searchbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

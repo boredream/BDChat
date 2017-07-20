@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.boredream.bdchat.R;
-import com.boredream.bdchat.activity.NewContactActivity;
+import com.boredream.bdchat.activity.SearchContactActivity;
 import com.boredream.bdchat.adapter.LetterContactAdapter;
 import com.boredream.bdchat.base.BaseFragment;
 import com.boredream.bdchat.entity.event.ContactChangeEvent;
@@ -63,9 +63,7 @@ public class ContactFragment extends BaseFragment implements PositionBar.OnPosit
         title.setRightOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                activity.intent2Activity(SearchContactActivity.class);
-                // FIXME: 2017/7/14
-                activity.intent2Activity(NewContactActivity.class);
+                activity.intent2Activity(SearchContactActivity.class);
             }
         });
         lv = (ListView) view.findViewById(R.id.lv);

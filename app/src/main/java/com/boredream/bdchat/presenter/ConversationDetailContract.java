@@ -8,14 +8,19 @@ import com.boredream.bdcodehelper.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imlib.model.Discussion;
+
 public interface ConversationDetailContract {
 
     interface View extends BaseView {
 
         void getUserInfoSuccess(ArrayList<User> users);
 
-        void addMemberSuccess();
+        void addMemberSuccess(ArrayList<User> users);
 
+        void removeMemberSuccess(User user);
+
+        void getDiscussionSuccess(Discussion discussion);
     }
 
     interface Presenter extends BasePresenter {
@@ -24,6 +29,8 @@ public interface ConversationDetailContract {
 
         void getMemberList(boolean isGroup, String targetId);
 
-        void addMember(ArrayList<User> chooseUsers);
+        void addMember(Discussion discussion, ArrayList<User> chooseUsers);
+
+        void removeMember(Discussion discussion, ArrayList<User> chooseUsers);
     }
 }

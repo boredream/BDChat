@@ -79,7 +79,7 @@ public class ChooseContactActivity extends BaseActivity implements PositionBar.O
                 Intent intent = new Intent();
                 intent.putExtra("mode", mode);
                 intent.putExtra("chooseUsers", adapter.getChooseUsers());
-                setResult(RESULT_OK);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });

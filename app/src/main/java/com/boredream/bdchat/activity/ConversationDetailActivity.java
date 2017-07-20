@@ -19,10 +19,7 @@ import com.boredream.bdcodehelper.view.SettingItemView;
 import com.boredream.bdcodehelper.view.TitleBarView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import io.rong.imkit.userInfoCache.RongUserInfoManager;
-import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Discussion;
 
 public class ConversationDetailActivity extends BaseActivity implements View.OnClickListener, ConversationDetailContract.View {
@@ -37,6 +34,7 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
     private boolean isGroup;
     private String targetId;
     private boolean isHost;
+    private Discussion discussion;
 
     private GroupMemberAdapter adapter;
 
@@ -61,12 +59,6 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
     private void initExtra() {
         isGroup = getIntent().getBooleanExtra("isGroup", false);
         targetId = getIntent().getStringExtra("targetId");
-
-        if(isGroup) {
-            // 获取讨论组创始人判断当前用户是否为群主
-            Discussion discussion = RongUserInfoManager.getInstance().getDiscussionInfo(targetId);
-            isHost = UserInfoKeeper.getInstance().getCurrentUser().getObjectId().equals(discussion.getCreatorId());
-        }
     }
 
     private void initData() {
@@ -84,30 +76,17 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
         title.setTitleText("发起群聊");
         title.setLeftBack(this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 5);
-        layoutManager.setAutoMeasureEnabled(true);
         rv_member.setLayoutManager(layoutManager);
         setting_clear.setMidText("清空聊天记录")
                 .setOnClickListener(this);
         btn_quit.setOnClickListener(this);
     }
 
-    private void addM1ember() {
-        if(targetId == null) {
-            // 单聊
-            String discussName = "群聊";
-            List<String> userList = new ArrayList<>();
-            RongIMClient.getInstance().createDiscussion(discussName, userList, new RongIMClient.CreateDiscussionCallback() {
-                @Override
-                public void onSuccess(String s) {
-
-                }
-
-                @Override
-                public void onError(RongIMClient.ErrorCode errorCode) {
-
-                }
-            });
-        }
+    @Override
+    public void getDiscussionSuccess(Discussion discussion) {
+        if(discussion == null) return;
+        this.discussion = discussion;
+        isHost = UserInfoKeeper.getInstance().getCurrentUser().getObjectId().equals(discussion.getCreatorId());
     }
 
     @Override
@@ -131,16 +110,25 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
     }
 
     private void addMember(ArrayList<User> chooseUsers) {
-        presenter.addMember(chooseUsers);
+        presenter.addMember(discussion, chooseUsers);
     }
 
     @Override
-    public void addMemberSuccess() {
-
+    public void addMemberSuccess(ArrayList<User> users) {
+        showTip("添加成功");
+        adapter.addUsers(users);
+        adapter.notifyDataSetChanged();
     }
 
     private void removeMember(ArrayList<User> chooseUsers) {
+        presenter.removeMember(discussion, chooseUsers);
+    }
 
+    @Override
+    public void removeMemberSuccess(User user) {
+        showTip("移除成功");
+        adapter.removeUser(user);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -165,8 +153,8 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
 
         switch (requestCode) {
             case ChooseContactActivity.REQUEST_CODE_CHOOSE_CONTACT:
-                int mode = getIntent().getIntExtra("mode", ChooseContactActivity.MODE_ADD);
-                ArrayList<User> chooseUsers = (ArrayList<User>) getIntent().getSerializableExtra("chooseUsers");
+                int mode = data.getIntExtra("mode", ChooseContactActivity.MODE_ADD);
+                ArrayList<User> chooseUsers = (ArrayList<User>) data.getSerializableExtra("chooseUsers");
                 if(mode == ChooseContactActivity.MODE_ADD) {
                     addMember(chooseUsers);
                 } else {

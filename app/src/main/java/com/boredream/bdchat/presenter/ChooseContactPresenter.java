@@ -28,19 +28,12 @@ public class ChooseContactPresenter implements ChooseContactContract.Presenter {
             return;
         }
 
-        // 群聊名称过20个字后不再添加
-        int nameMaxSize = 20;
-        StringBuilder sbGroupName = new StringBuilder();
         final List<String> userIds = new ArrayList<>();
         for (User user : users) {
-            if(sbGroupName.length() < nameMaxSize) {
-                sbGroupName.append(user.getNickname()).append("、");
-            }
-
             userIds.add(user.getObjectId());
         }
 
-        final String groupName = sbGroupName.substring(0, sbGroupName.length()-1);
+        final String groupName = "群聊";
         Observable.create(new ObservableOnSubscribe<String>() {
                     @Override
                     public void subscribe(@NonNull final ObservableEmitter<String> e) throws Exception {
