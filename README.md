@@ -1,7 +1,7 @@
 # 项目地址
-主项目：https://github.com/boredream/BDChat
-依赖主model：https://github.com/boredream/bdcodehelper
-服务端代码：https://github.com/boredream/BoreIMCloud
+主项目：https://github.com/boredream/BDChat  
+依赖主model：https://github.com/boredream/bdcodehelper  
+服务端代码：https://github.com/boredream/BoreIMCloud  
 ###### 欢迎 Star和Follow~
 
 > ###### 注意： 
