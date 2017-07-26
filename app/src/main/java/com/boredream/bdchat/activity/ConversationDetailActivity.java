@@ -74,7 +74,7 @@ public class ConversationDetailActivity extends BaseActivity implements View.OnC
         setting_clear = (SettingItemView) findViewById(R.id.setting_clear);
         btn_quit = (Button) findViewById(R.id.btn_quit);
 
-        title.setTitleText("发起群聊");
+        title.setTitleText("会话详情");
         title.setLeftBack(this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 5);
         rv_member.setLayoutManager(layoutManager);
